@@ -1,6 +1,7 @@
 package com.sevenzeal.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.sevenzeal.dto.LoginRequest;
@@ -16,13 +17,15 @@ public class AuthService {
     @Autowired
     private JwtService jwtService;
 
+    @Autowired
+    private BCryptPasswordEncoder encoder;
+
     public String login(LoginRequest request) {
 
         User user = repository.findByEmail(request.email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        // 🔥 valida senha (simples por enquanto)
-        if (user.getSenha() == null || !user.getSenha().equals(request.senha)) {
+        if (!encoder.matches(request.senha, user.getSenha())) {
             throw new RuntimeException("Senha inválida");
         }
 
