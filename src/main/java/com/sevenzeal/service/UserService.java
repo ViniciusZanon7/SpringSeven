@@ -1,5 +1,8 @@
 package com.sevenzeal.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -59,5 +62,17 @@ public class UserService {
         User saved = repository.save(user);
 
         return new UserResponse(saved.getId(), saved.getNome(), saved.getEmail(), saved.getTipoUsuario());
+    }
+
+    public List<UserResponse> listarUsuarios() {
+        return repository.findAll()
+                .stream()
+                .map(user -> new UserResponse(
+                        user.getId(),
+                        user.getNome(),
+                        user.getEmail(),
+                        user.getTipoUsuario()
+                    ))
+                    .collect(Collectors.toList());
     }
 }

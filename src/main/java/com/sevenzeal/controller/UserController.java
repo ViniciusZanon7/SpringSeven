@@ -1,5 +1,7 @@
 package com.sevenzeal.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,5 +28,10 @@ public class UserController {
         @RequestParam String tipoUsuario
     ) {
         return ResponseEntity.ok(service.atualizarTipoUsuario(id, tipoUsuario));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> listar() {
+        return ResponseEntity.ok(service.listarUsuarios());
     }
 }

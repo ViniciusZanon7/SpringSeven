@@ -1,7 +1,6 @@
 package com.sevenzeal.model;
 
 import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -26,8 +25,13 @@ public class User {
     @Column(name = "tipo_usuario", nullable = false)
     private String tipoUsuario;
 
-    @Column(name = "criado_em")
+    @Column(name = "criado_em", updatable = false)
     private LocalDateTime criadoEm;
+
+    @PrePersist
+    public void prePersist() {
+        this.criadoEm = LocalDateTime.now();
+    }
 
     public User() {}
 
@@ -37,10 +41,7 @@ public class User {
     public String getTelefone() { return telefone; }
     public String getSenha() { return senha; }
     public String getTipoUsuario() { return tipoUsuario; }
-
-    public TipoUsuario getTipoUsuarioEnum() {
-        return TipoUsuario.from(tipoUsuario);
-    }
+    public LocalDateTime getCriadoEm() { return criadoEm; }
 
     public void setNome(String nome) { this.nome = nome; }
     public void setEmail(String email) { this.email = email; }
