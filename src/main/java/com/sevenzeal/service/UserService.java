@@ -33,7 +33,7 @@ public class UserService {
         user.setNome(request.nome);
         user.setEmail(request.email);
         user.setTelefone(request.telefone);
-        user.setTipoUsuario(request.tipoUsuario);
+        user.setTipoUsuario(TipoUsuario.from(request.tipoUsuario).name());
         user.setSenha(encoder.encode(request.senha));
 
         User saved = repository.save(user);

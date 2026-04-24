@@ -16,7 +16,7 @@ public class JwtService {
     private String SECRET;
 
     private Key getKey() {
-        return Keys.hmacShaKeyFor(SECRET.getBytes());
+    return Keys.hmacShaKeyFor(SECRET.getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
 
     public String gerarToken(String email, String tipoUsuario) {
