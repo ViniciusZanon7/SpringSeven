@@ -3,6 +3,7 @@ package com.sevenzeal.service;
 import java.security.Key;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.*;
@@ -11,7 +12,8 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-    private final String SECRET = "minha-chave-super-secreta-com-32-caracteres";
+    @Value("${jwt.secret}")
+    private String SECRET;
 
     private Key getKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes());

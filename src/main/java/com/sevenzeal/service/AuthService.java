@@ -1,8 +1,11 @@
 package com.sevenzeal.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 
 import com.sevenzeal.dto.LoginRequest;
 import com.sevenzeal.model.User;
@@ -23,10 +26,10 @@ public class AuthService {
     public String login(LoginRequest request) {
 
         User user = repository.findByEmail(request.email)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
         if (!encoder.matches(request.senha, user.getSenha())) {
-            throw new RuntimeException("Senha inválida");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Senha inválida");
         }
 
         return jwtService.gerarToken(user.getEmail(), user.getTipoUsuario());
