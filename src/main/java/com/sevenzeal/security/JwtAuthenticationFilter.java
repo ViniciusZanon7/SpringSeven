@@ -29,27 +29,53 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            try {
-                String email = jwtService.extrairEmail(token);
-                String tipoUsuario = jwtService.extrairTipoUsuario(token);
+        String path = request.getServletPath();
 
-                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    userRepository.findByEmail(email).ifPresent(user -> {
-                        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(tipoUsuario.toUpperCase());
-                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                                user.getEmail(), null, List.of(authority));
-                        SecurityContextHolder.getContext().setAuthentication(authToken);
-                    });
-                }
-            } catch (Exception ex) {
-                // ignore token parse errors
+        // 🔓 Ignorar rotas públicas
+        if (path.startsWith("/auth") || path.startsWith("/usuarios")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String authHeader = request.getHeader("Authorization");
+
+        // 🔓 Se não tiver token, segue sem autenticar
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String token = authHeader.substring(7);
+
+        try {
+            String email = jwtService.extrairEmail(token);
+            String tipoUsuario = jwtService.extrairTipoUsuario(token);
+
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                userRepository.findByEmail(email).ifPresent(user -> {
+                    SimpleGrantedAuthority authority =
+                            new SimpleGrantedAuthority(tipoUsuario.toUpperCase());
+
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    user.getEmail(),
+                                    null,
+                                    List.of(authority)
+                            );
+
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                });
             }
+
+        } catch (Exception ex) {
+            // 🔥 limpa contexto se token for inválido
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
