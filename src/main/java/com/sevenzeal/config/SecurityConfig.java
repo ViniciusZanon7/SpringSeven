@@ -30,8 +30,8 @@ public class SecurityConfig {
         http
             // 🔥 DESLIGA TUDO QUE É STATEFUL
             .csrf(csrf -> csrf.disable())
-            .httpBasic(http -> http.disable())
-            .formLogin(form -> form.disable())
+            .httpBasic(httpBasic -> httpBasic.disable())
+            .formLogin(formLogin -> formLogin.disable())
 
             // 🔥 ESSENCIAL PRA JWT
             .sessionManagement(session -> session
