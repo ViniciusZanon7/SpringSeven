@@ -45,7 +45,7 @@ public class SecurityConfig {
 
             // 🔐 REGRAS
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/auth/**", "/usuarios/**").permitAll()
+                .requestMatchers("/", "/auth/**", "/usuarios", "/usuarios/**").permitAll()
                 .requestMatchers("/esteticas/**", "/servicos/**").hasAnyAuthority("ESTETICA", "ADMIN")
                 .requestMatchers("/agendamentos/**").hasAnyAuthority("CLIENTE", "ESTETICA", "ADMIN")
                 .requestMatchers("/estatisticas/**", "/notificacoes/**", "/historico-servicos/**").hasAnyAuthority("ADMIN", "ESTETICA")
