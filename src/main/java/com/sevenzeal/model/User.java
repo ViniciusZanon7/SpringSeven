@@ -32,6 +32,9 @@ public class User {
     public void prePersist() {
         this.criadoEm = LocalDateTime.now();
     }
+    @ManyToOne
+    @JoinColumn(name = "estetica_id", nullable = true)
+    private Estetica estetica;
 
     public User() {}
 
@@ -42,10 +45,11 @@ public class User {
     public String getSenha() { return senha; }
     public String getTipoUsuario() { return tipoUsuario; }
     public LocalDateTime getCriadoEm() { return criadoEm; }
-
+    public Estetica getEstetica() { return estetica; }
     public void setNome(String nome) { this.nome = nome; }
     public void setEmail(String email) { this.email = email; }
     public void setTelefone(String telefone) { this.telefone = telefone; }
     public void setSenha(String senha) { this.senha = senha; }
     public void setTipoUsuario(String tipoUsuario) { this.tipoUsuario = tipoUsuario; }
+    public void setEstetica(Estetica estetica) { this.estetica = estetica; }
 }

@@ -12,8 +12,9 @@ public class Estetica {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "usuario_id")
-    private Long usuarioId;
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private User usuario;
 
     private String nome;
     private String endereco;
@@ -26,14 +27,14 @@ public class Estetica {
     public Estetica() {}
 
     public Long getId() { return id; }
-    public Long getUsuarioId() { return usuarioId; }
+    public User getUsuario() { return usuario; }
     public String getNome() { return nome; }
     public String getEndereco() { return endereco; }
     public String getCidade() { return cidade; }
     public String getTelefone() { return telefone; }
     public LocalDateTime getCriadoEm() { return criadoEm; }
 
-    public void setUsuarioId(Long usuarioId) { this.usuarioId = usuarioId; }
+    public void setUsuario(User usuario) { this.usuario = usuario; }
     public void setNome(String nome) { this.nome = nome; }
     public void setEndereco(String endereco) { this.endereco = endereco; }
     public void setCidade(String cidade) { this.cidade = cidade; }

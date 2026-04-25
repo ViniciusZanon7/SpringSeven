@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.sevenzeal.model.Estetica;
 
 public interface EsteticaRepository extends JpaRepository<Estetica, Long> {
-    List<Estetica> findByUsuarioId(Long usuarioId);
+    List<Estetica> findByUsuario_Id(Long usuarioId);
 }
