@@ -56,9 +56,10 @@ public class NotificacaoService {
         LocalDate hoje = LocalDate.now();
         historicoServicoService.listarVencimentos(hoje).forEach(h -> {
             String mensagem = String.format("Manutenção de serviço #%d no veículo #%d está vencida ou próxima (data %s).", h.servicoId, h.veiculoId, h.proximaManutencao);
-            proprietarioRepository.findByVeiculoIdAndDataFimIsNull(h.veiculoId).ifPresent(p -> {
-                criar(p.getUsuarioId(), mensagem);
-            });
+            proprietarioRepository.findByVeiculo_IdAndDataFimIsNull(h.veiculoId)
+                .ifPresent(p -> {
+                    criar(p.getUsuario().getId(), mensagem);
+    });
         });
     }
 }

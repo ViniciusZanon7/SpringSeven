@@ -9,8 +9,9 @@ import com.sevenzeal.model.HistoricoProprietario;
 
 public interface HistoricoProprietarioRepository extends JpaRepository<HistoricoProprietario, Long> {
 
-    Optional<HistoricoProprietario> findByVeiculoIdAndDataFimIsNull(Long veiculoId);
+    Optional<HistoricoProprietario> findByVeiculo_IdAndDataFimIsNull(Long veiculoId);
 
-    List<HistoricoProprietario> findByUsuarioId(Long usuarioId);
-    List<HistoricoProprietario> findByVeiculoId(Long veiculoId);
+    List<HistoricoProprietario> findByUsuario_Id(Long usuarioId);
+
+    List<HistoricoProprietario> findByVeiculo_Id(Long veiculoId);
 }

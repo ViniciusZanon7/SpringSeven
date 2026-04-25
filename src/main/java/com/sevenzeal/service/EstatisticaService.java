@@ -33,11 +33,11 @@ public class EstatisticaService {
     }
 
     public EstatisticaUsuarioResponse estatisticasUsuario(Long usuarioId) {
-        List<HistoricoProprietario> proprietarios = proprietarioRepository.findByUsuarioId(usuarioId);
-        Long totalVeiculos = proprietarios.stream().map(HistoricoProprietario::getVeiculoId).distinct().count();
+        List<HistoricoProprietario> proprietarios = proprietarioRepository.findByUsuario_Id(usuarioId);
+        Long totalVeiculos = proprietarios.stream().map(p -> p.getVeiculo().getId()).distinct().count();
 
         Long totalServicos = proprietarios.stream()
-                .flatMap(p -> historicoServicoRepository.findByVeiculoId(p.getVeiculoId()).stream())
+                .flatMap(p -> historicoServicoRepository.findByVeiculoId(p.getVeiculo().getId()).stream())
                 .count();
 
         return new EstatisticaUsuarioResponse(usuarioId, totalVeiculos, totalServicos);
@@ -52,17 +52,26 @@ public class EstatisticaService {
     }
 
     public List<EstatisticaUsuarioResponse> usuariosParaPromocao(long minServicos) {
-        return proprietarioRepository.findAll().stream()
-                .collect(Collectors.groupingBy(HistoricoProprietario::getUsuarioId, Collectors.mapping(HistoricoProprietario::getVeiculoId, Collectors.toSet())))
-                .entrySet().stream()
-                .map(entry -> {
-                    Long usuarioId = entry.getKey();
-                    long totalServicos = entry.getValue().stream()
-                            .flatMap(vid -> historicoServicoRepository.findByVeiculoId(vid).stream())
-                            .count();
-                    return new EstatisticaUsuarioResponse(usuarioId, (long) entry.getValue().size(), totalServicos);
-                })
-                .filter(r -> r.totalServicos >= minServicos)
-                .toList();
-    }
+    return proprietarioRepository.findAll().stream()
+        .collect(Collectors.groupingBy(
+            p -> p.getUsuario().getId(),
+            Collectors.mapping(p -> p.getVeiculo().getId(), Collectors.toSet())
+        ))
+        .entrySet().stream()
+        .map(entry -> {
+            Long usuarioId = entry.getKey();
+
+            long totalServicos = entry.getValue().stream()
+                .flatMap(vid -> historicoServicoRepository.findByVeiculoId(vid).stream())
+                .count();
+
+            return new EstatisticaUsuarioResponse(
+                usuarioId,
+                (long) entry.getValue().size(),
+                totalServicos
+            );
+        })
+        .filter(r -> r.totalServicos >= minServicos)
+        .toList();
+}
 }

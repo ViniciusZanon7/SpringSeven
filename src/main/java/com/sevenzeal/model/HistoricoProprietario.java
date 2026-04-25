@@ -1,7 +1,6 @@
 package com.sevenzeal.model;
 
 import java.time.LocalDate;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -12,11 +11,15 @@ public class HistoricoProprietario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "veiculo_id")
-    private Long veiculoId;
+    // 🔥 RELAÇÃO COM VEÍCULO
+    @ManyToOne
+    @JoinColumn(name = "veiculo_id")
+    private Veiculo veiculo;
 
-    @Column(name = "usuario_id")
-    private Long usuarioId;
+    // 🔥 RELAÇÃO COM USUÁRIO
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private User usuario;
 
     @Column(name = "data_inicio")
     private LocalDate dataInicio;
@@ -27,13 +30,13 @@ public class HistoricoProprietario {
     public HistoricoProprietario() {}
 
     public Long getId() { return id; }
-    public Long getVeiculoId() { return veiculoId; }
-    public Long getUsuarioId() { return usuarioId; }
+    public Veiculo getVeiculo() { return veiculo; }
+    public User getUsuario() { return usuario; }
     public LocalDate getDataInicio() { return dataInicio; }
     public LocalDate getDataFim() { return dataFim; }
 
-    public void setVeiculoId(Long veiculoId) { this.veiculoId = veiculoId; }
-    public void setUsuarioId(Long usuarioId) { this.usuarioId = usuarioId; }
+    public void setVeiculo(Veiculo veiculo) { this.veiculo = veiculo; }
+    public void setUsuario(User usuario) { this.usuario = usuario; }
     public void setDataInicio(LocalDate dataInicio) { this.dataInicio = dataInicio; }
     public void setDataFim(LocalDate dataFim) { this.dataFim = dataFim; }
 }
