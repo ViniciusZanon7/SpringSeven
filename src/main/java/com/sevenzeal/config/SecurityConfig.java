@@ -1,5 +1,7 @@
 package com.sevenzeal.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -7,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.sevenzeal.security.JwtAuthenticationFilter;
 
@@ -25,25 +29,37 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
 
-            .authorizeHttpRequests(auth -> auth
-                // 🔓 rotas públicas
-                .requestMatchers("/auth/**", "/usuarios").permitAll()
+            // 🔥 HABILITA CORS AQUI
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-                // 🔐 resto protegido
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/auth/**", "/usuarios").permitAll()
                 .anyRequest().authenticated()
             )
 
-            // 🔥 desativa login padrão do Spring
             .httpBasic(httpBasic -> httpBasic.disable())
             .formLogin(form -> form.disable())
 
-            // 🔐 adiciona filtro JWT
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // 🔐 encoder (ESSENCIAL)
+    // 🔥 CONFIGURAÇÃO DO CORS
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        return request -> {
+            CorsConfiguration config = new CorsConfiguration();
+
+            config.setAllowedOrigins(List.of("http://localhost:5173")); // 🔥 seu front
+            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
+            config.setAllowedHeaders(List.of("*"));
+            config.setAllowCredentials(true);
+
+            return config;
+        };
+    }
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
