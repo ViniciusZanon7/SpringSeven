@@ -29,29 +29,38 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
 
-            // 🔥 HABILITA CORS AQUI
+            // 🔥 CORS LIBERADO
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**", "/usuarios").permitAll()
+                // 🔓 ROTAS PÚBLICAS
+                .requestMatchers(
+                    "/auth/**",
+                    "/usuarios",
+                    "/esteticas",
+                    "/servicos/**"
+                ).permitAll()
+
+                // 🔐 RESTANTE PROTEGIDO
                 .anyRequest().authenticated()
             )
 
             .httpBasic(httpBasic -> httpBasic.disable())
             .formLogin(form -> form.disable())
 
+            // 🔐 JWT FILTER
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // 🔥 CONFIGURAÇÃO DO CORS
+    // 🔥 CONFIGURAÇÃO CORS (FUNCIONA LOCAL + PRODUÇÃO)
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         return request -> {
             CorsConfiguration config = new CorsConfiguration();
 
-            config.setAllowedOrigins(List.of("http://localhost:5173")); // 🔥 seu front
+            config.setAllowedOriginPatterns(List.of("*")); // 🔥 aceita qualquer origem
             config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
             config.setAllowedHeaders(List.of("*"));
             config.setAllowCredentials(true);
