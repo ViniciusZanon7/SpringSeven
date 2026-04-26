@@ -18,28 +18,29 @@ public class EsteticaController {
     @Autowired
     private EsteticaService service;
 
+    // 🔐 CRIAR -> PROTEGIDO
     @PreAuthorize("hasAuthority('ESTETICA') or hasAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<EsteticaResponse> criar(@RequestBody EsteticaRequest request) {
         return ResponseEntity.ok(service.criar(request));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('ESTETICA')")
+    // 🔓 LISTAR -> PÚBLICO
     @GetMapping
     public ResponseEntity<List<EsteticaResponse>> listar() {
         return ResponseEntity.ok(service.listarTodos());
     }
 
+    // 🔐 LISTAR POR USUÁRIO -> PROTEGIDO
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('ESTETICA')")
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<EsteticaResponse>> listarPorUsuario(@PathVariable Long usuarioId) {
         return ResponseEntity.ok(service.listarPorDono(usuarioId));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('ESTETICA')")
+    // 🔓 OBTER POR ID -> PÚBLICO (opcional)
     @GetMapping("/{id}")
     public ResponseEntity<EsteticaResponse> obter(@PathVariable Long id) {
         return ResponseEntity.ok(service.obter(id));
     }
 }
-
