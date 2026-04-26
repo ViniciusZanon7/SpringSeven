@@ -29,30 +29,25 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
 
-            // 🔥 CORS LIBERADO
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
             .authorizeHttpRequests(auth -> auth
-                // 🔓 ROTAS PÚBLICAS
                 .requestMatchers(
                     "/auth/**",
                     "/usuarios",
-                    "/esteticas",
+                    "/esteticas/**",
                     "/servicos/**"
                 ).permitAll()
-
-                // 🔐 RESTANTE PROTEGIDO
                 .anyRequest().authenticated()
             )
 
             .httpBasic(httpBasic -> httpBasic.disable())
             .formLogin(form -> form.disable())
 
-            // 🔐 JWT FILTER
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
+}
 
     // 🔥 CONFIGURAÇÃO CORS (FUNCIONA LOCAL + PRODUÇÃO)
     @Bean
