@@ -8,5 +8,6 @@ public class ServicoRequest {
     public String descricao;
     public BigDecimal preco;
     public Integer duracaoMinutos;
+    public Integer duracaoDias;
     public Integer intervaloManutencaoDias;
 }

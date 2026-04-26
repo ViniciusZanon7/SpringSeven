@@ -24,6 +24,7 @@ public class ServicoService {
         s.setDescricao(request.descricao);
         s.setPreco(request.preco);
         s.setDuracaoMinutos(request.duracaoMinutos);
+        s.setDuracaoDias(request.duracaoDias);
         s.setIntervaloManutencaoDias(request.intervaloManutencaoDias);
 
         Servico salvo = repository.save(s);
@@ -39,6 +40,6 @@ public class ServicoService {
     }
 
     private ServicoResponse toResponse(Servico s) {
-        return new ServicoResponse(s.getId(), s.getEsteticaId(), s.getNome(), s.getDescricao(), s.getPreco(), s.getDuracaoMinutos(), s.getIntervaloManutencaoDias());
+        return new ServicoResponse(s.getId(), s.getEsteticaId(), s.getNome(), s.getDescricao(), s.getPreco(), s.getDuracaoMinutos(), s.getDuracaoDias(), s.getIntervaloManutencaoDias());
     }
 }
