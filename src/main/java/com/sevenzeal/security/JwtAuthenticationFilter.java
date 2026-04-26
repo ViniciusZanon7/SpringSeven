@@ -37,11 +37,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
 
         // 🔓 Ignorar rotas públicas
-        if (path.startsWith("/auth") || path.startsWith("/usuarios")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
+        if (
+             path.startsWith("/auth") ||
+             path.startsWith("/usuarios") ||
+             path.startsWith("/esteticas") ||
+             path.startsWith("/servicos")
+) {
+    filterChain.doFilter(request, response);
+    return;
+}
         String authHeader = request.getHeader("Authorization");
 
         // 🔓 Se não tiver token, segue sem autenticar
