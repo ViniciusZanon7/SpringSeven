@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy; // 👈 IMPORTANTE
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,6 +32,11 @@ public class SecurityConfig {
 
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
+            // 🔥 ESSA LINHA FALTAVA
+            .sessionManagement(session -> 
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/auth/**",
@@ -47,15 +53,14 @@ public class SecurityConfig {
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-}
+    }
 
-    // 🔥 CONFIGURAÇÃO CORS (FUNCIONA LOCAL + PRODUÇÃO)
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         return request -> {
             CorsConfiguration config = new CorsConfiguration();
 
-            config.setAllowedOriginPatterns(List.of("*")); // 🔥 aceita qualquer origem
+            config.setAllowedOriginPatterns(List.of("*"));
             config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
             config.setAllowedHeaders(List.of("*"));
             config.setAllowCredentials(true);
