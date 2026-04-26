@@ -1,5 +1,6 @@
 package com.sevenzeal.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,4 +44,16 @@ public class VeiculoService {
             salvo.getCodigoPublico()
         );
     }
+    public List<VeiculoResponse> listarTodos() {
+    return repository.findAll().stream().map(v ->
+        new VeiculoResponse(
+            v.getId(),
+            v.getTipoVeiculo(),
+            v.getMarca(),
+            v.getModelo(),
+            v.getPlaca(),
+            v.getCodigoPublico()
+        )
+    ).toList();
+}
 }
