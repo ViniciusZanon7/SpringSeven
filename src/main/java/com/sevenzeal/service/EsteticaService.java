@@ -54,6 +54,24 @@ public class EsteticaService {
     }
 
     private EsteticaResponse toResponse(Estetica e) {
-        return new EsteticaResponse(e.getId(), e.getUsuario().getId(), e.getNome(), e.getEndereco(), e.getCidade(), e.getTelefone(), e.getCriadoEm());
-    }
+    return new EsteticaResponse(
+        e.getId(),
+        e.getUsuarioId(),
+        e.getNome(),
+        e.getEndereco(),
+        e.getCidade(),
+        e.getTelefone(),
+
+        e.getLogoUrl(),
+        e.getCorPrimaria(),
+        e.getCorSecundaria(),
+        e.getCorFundo(),
+
+        e.getWhatsappUrl(),
+        e.getMapsUrl(),
+        e.getInstagramUrl(),
+
+        e.getCriadoEm()
+    );
+}
 }
